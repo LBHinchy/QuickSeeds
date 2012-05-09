@@ -1,4 +1,4 @@
-package com.fuckingwin.bukkit.rakiru.QuickSeeds;
+package us.hinchy.QuickSeeds;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

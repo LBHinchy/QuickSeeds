@@ -1,4 +1,4 @@
-package com.fuckingwin.bukkit.rakiru.QuickSeeds;
+package us.hinchy.QuickSeeds;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

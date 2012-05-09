@@ -1,4 +1,4 @@
-package com.fuckingwin.bukkit.rakiru.QuickSeeds;
+package us.hinchy.QuickSeeds;
 
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
