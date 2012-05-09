@@ -3,31 +3,18 @@ package us.hinchy.QuickSeeds;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.Material;
-import org.bukkit.event.block.BlockListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * Listener for the block place event.
- * @author rakiru
- */
-public class QuickSeedsBlockListener extends BlockListener {
+public class QuickSeedsBlockListener implements Listener {
 
-    private final QuickSeedsPlugin plugin;
-
-    public QuickSeedsBlockListener(final QuickSeedsPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
+    @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (plugin.usePermissions) {
-            if (!(plugin.permissionHandler.has(player, "quickseeds.plant"))) {
-                return;
-            }
-        }
+        if (!(player.hasPermission("quickseeds.plant"))) return;
 
         Block block = event.getBlock();
         // If player planted seeds and has more seeds
@@ -53,22 +40,23 @@ public class QuickSeedsBlockListener extends BlockListener {
         }
     }
 
-    public void removeItems(Player player, Material material, int amount) {
-         plugin.log.debug("Amount to remove: " + Integer.toString(amount));
+    @SuppressWarnings("deprecation")
+	public void removeItems(Player player, Material material, int amount) {
+    	QuickSeedsPlugin.log.debug("Amount to remove: " + Integer.toString(amount));
         int remaining = amount;
         int stackSize;
         int slot;
         while (remaining > 0) {
             slot = player.getInventory().first(material);
             stackSize = player.getInventory().getItem(slot).getAmount();
-            plugin.log.debug("Stack size: " + Integer.toString(stackSize));
+            QuickSeedsPlugin.log.debug("Stack size: " + Integer.toString(stackSize));
             if (stackSize <= remaining) {
                 player.getInventory().clear(slot);
                 remaining-=stackSize;
             } else {
                 ItemStack stack = player.getInventory().getItem(slot);
                 int newStackSize = stackSize-remaining;
-                plugin.log.debug("New stack size: " + Integer.toString(newStackSize));
+                QuickSeedsPlugin.log.debug("New stack size: " + Integer.toString(newStackSize));
                 stack.setAmount(newStackSize);
                 player.getInventory().setItem(slot, stack);
                 remaining = 0;

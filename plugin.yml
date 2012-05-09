@@ -3,6 +3,7 @@ main: us.hinchy.QuickSeeds.QuickSeedsPlugin
 version: 0.2.0
 description: Plant seeds quicker. More time to tend to your animals.
 commands:
-  quickseeds:
-    description: Quickseeds commands
-    usage: "Usage: /quickseeds for available commands"
+  qsreload:
+    description: Reload the QuickSeeds config.
+    permission: quickseeds.reload
+    usage: "/qsreload"

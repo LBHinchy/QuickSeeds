@@ -1,29 +1,13 @@
 package us.hinchy.QuickSeeds;
 
-import java.util.HashMap;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.PluginManager;
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
-import org.bukkit.plugin.Plugin;
-import java.util.logging.Logger;
-import org.bukkit.util.config.Configuration;
 
-/**
- * QuickSeeds plugin for bukkit
- *
- * @author rakiru
- */
 public class QuickSeedsPlugin extends JavaPlugin {
 
-    public static PermissionHandler permissionHandler;
-    public boolean usePermissions;
-    public static final QuickSeedsLogger log = new QuickSeedsLogger();
-    private final QuickSeedsBlockListener blockListener = new QuickSeedsBlockListener(this);
+    public static QuickSeedsLogger log;
 
     public void onDisable() {
         // Output to console that plugin is disabled
@@ -32,32 +16,33 @@ public class QuickSeedsPlugin extends JavaPlugin {
     }
 
     public void onEnable() {
+    	// Enable log
+    	log = new QuickSeedsLogger(this);
+    	
         // Load config
-        QuickSeedsConfig.load();
+		this.getConfig();
+		if (this.getConfig().isSet("debug") == false) {
+			this.saveDefaultConfig();
+			log.info("[QuickSeeds] Config did not exist or was invalid, default config saved.");
+		}
         
         // Get plugin info from plugin.yml
         PluginDescriptionFile pdfFile = this.getDescription();
 
-        // Setup permissions
-        Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-
-        if (permissionsPlugin == null) {
-            log.info("[" + pdfFile.getName() + "] Permission system not detected, defaulting to all users");
-            usePermissions = false;
-        } else {
-            log.info("[" + pdfFile.getName() + "] Permission system detected");
-            usePermissions = true;
-            this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-        }
-
-        // Register commands
-        getCommand("quickseeds").setExecutor(new QuickSeedsCommand(this));
-
         // Register events
-        PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
+        getServer().getPluginManager().registerEvents(new QuickSeedsBlockListener(), this);
 
         // Output to console that plugin is enabled
         log.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " enabled!");
     }
+    
+
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+		if (cmd.getName().equalsIgnoreCase("qsreload")) {
+			this.reloadConfig();
+			sender.sendMessage("QuickSeeds configuration reloaded.");
+			return true;
+		}
+		return false; 
+	}
 }
