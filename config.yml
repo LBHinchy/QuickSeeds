@@ -1,1 +1,4 @@
-debug: false
+crops:
+    wheat: true
+    potato: true
+    carrot: true
